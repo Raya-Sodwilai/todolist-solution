@@ -4,24 +4,24 @@ namespace ToDoList.Models
 {
   public class Item
   {
-    // We add set; to the line below.
     public string Description { get; set; }
-    private static List<Item> _instance = new List<Item> {};
+    private static List<Item> _instances = new List<Item> {};
 
-    public Item(string description)
+    public Item (string description)
     {
       Description = description;
-      _instance.Add(this);
+      _instances.Add(this);
     }
 
     public static List<Item> GetAll()
     {
-      return _instance;
+      return _instances;
     }
 
     public static void ClearAll()
     {
-      _instance.Clear();
+      _instances.Clear();
     }
+
   }
 }
