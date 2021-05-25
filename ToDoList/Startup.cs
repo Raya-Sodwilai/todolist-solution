@@ -14,12 +14,12 @@ namespace ToDoList
     public Startup(IWebHostEnvironment env)
     {
       var builder = new ConfigurationBuilder()
-          .SetBasePath(env.ContentRootPath)
-          .AddEnvironmentVariables();
+        .SetBasePath(env.ContentRootPath)
+        .AddJsonFile("appsettings.json");
       Configuration = builder.Build();
     }
 
-    public IConfigurationRoot Configuration { get; }
+    public IConfigurationRoot Configuration { get; set; }
 
     public void ConfigureServices(IServiceCollection services)
     {
@@ -28,9 +28,11 @@ namespace ToDoList
       services.AddEntityFrameworkMySql()
         .AddDbContext<ToDoListContext>(options => options
         .UseMySql(Configuration["ConnectionStrings:DefaultConnection"], ServerVersion.AutoDetect(Configuration["ConnectionStrings:DefaultConnection"])));
+        
       services.AddIdentity<ApplicationUser, IdentityRole>()
         .AddEntityFrameworkStores<ToDoListContext>()
         .AddDefaultTokenProviders();
+
       services.Configure<IdentityOptions>(options =>
       {
         options.Password.RequireDigit = false;
@@ -45,11 +47,13 @@ namespace ToDoList
     public void Configure(IApplicationBuilder app)
     {
       app.UseDeveloperExceptionPage();
-      app.UseAuthentication();
+
+      app.UseAuthentication(); 
+
       app.UseRouting();
 
-      app.UseAuthentication();
-      
+      app.UseAuthorization();
+
       app.UseEndpoints(routes =>
       {
         routes.MapControllerRoute("default", "{controller=Home}/{action=Index}/{id?}");
